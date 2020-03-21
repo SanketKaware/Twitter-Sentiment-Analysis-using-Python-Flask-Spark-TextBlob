@@ -1,0 +1,62 @@
+<!-- <!DOCTYPE html> -->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>TwitterSentimentAnalysis</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    </head>
+    
+    
+    <div class="jumbotron text-center">
+    <h1>Twitter Sentiment Analysis</h1>
+    
+    <body style="background-color: whitesmoke">
+        <div class="form-group">
+            <label>Please enter your topic: </label>
+            <input id="txttopic" type="text" style="width:250px; height: 50px" required/>
+            <button id="btnStart" style="height:50px;width:150px">Start</button>
+            <button id="btnStop" style="height:50px;width:150px">Stop</button>
+        </div>
+        <div>            
+            <iframe src="https://d0a3944909d748efb451fe5b4e58c75f.us-west-1.aws.found.io:9243/app/kibana#/dashboard/2fbd2be0-03c8-11e9-8b1a-e50f9875d4fb?embed=true&_g=(refreshInterval:(pause:!t,value:0),time:(from:now%2Fy,mode:quick,to:now%2Fy))&_a=(description:'',filters:!(),fullScreenMode:!f,options:(darkTheme:!f,hidePanelTitles:!f,useMargins:!t),panels:!((embeddableConfig:(),gridData:(h:11,i:'1',w:21,x:0,y:0),id:'7f9b33c0-03c1-11e9-8b1a-e50f9875d4fb',panelIndex:'1',type:visualization,version:'6.5.3'),(embeddableConfig:(),gridData:(h:11,i:'2',w:10,x:38,y:0),id:d75d1380-03c6-11e9-8b1a-e50f9875d4fb,panelIndex:'2',type:visualization,version:'6.5.3'),(embeddableConfig:(),gridData:(h:11,i:'3',w:17,x:21,y:0),id:'024298d0-0193-11e9-8b1a-e50f9875d4fb',panelIndex:'3',type:visualization,version:'6.5.3'),(embeddableConfig:(),gridData:(h:15,i:'4',w:19,x:0,y:11),id:e5e04640-03e7-11e9-8b1a-e50f9875d4fb,panelIndex:'4',type:visualization,version:'6.5.3'),(embeddableConfig:(),gridData:(h:15,i:'5',w:15,x:19,y:11),id:'847d9730-03e8-11e9-8b1a-e50f9875d4fb',panelIndex:'5',type:visualization,version:'6.5.3'),(embeddableConfig:(),gridData:(h:15,i:'6',w:14,x:34,y:11),id:'4e90fe30-03e5-11e9-8b1a-e50f9875d4fb',panelIndex:'6',type:search,version:'6.5.3')),query:(language:lucene,query:''),timeRestore:!f,title:'Twitter+sentiment+analysis',viewMode:view)" height="800" width="1200"></iframe>
+        </div>
+    </body>
+    <script src="{{url_for('static', filename='jquery-1.8.3.js')}}"></script>    
+    <script>
+        $(document).ready(onload)
+        var flagIsStream = '{{flag_isStreaming}}'
+        function onload(){
+            $("#btnStop").prop("disabled", true);
+            $("#btnStart").click(function(){
+                $.ajax({
+                    url: "/run",
+                    type: 'POST',
+                    data: {
+                        topic_name:$("#txttopic").val()
+                    },                    
+                    error : function(e){                        
+                        alert("Oops there is some error while starting")
+                    },
+                    success: function(s){                        
+                        alert("Streaming Started")
+                        $("#btnStart").prop("disabled", true);
+                        $("#btnStop").prop("disabled", false);
+                    }
+                })             
+            })
+            $("#btnStop").click(function(){
+                $.ajax({
+                    url: "/stop",                                    
+                    error : function(e){                        
+                        alert("Oops there is some error while stopping")
+                    },
+                    success: function(s){                        
+                        alert("Streaming Stopped")
+                        $("#btnStart").prop("disabled", false);
+                        $("#btnStop").prop("disabled", true);
+                    }
+                })             
+            })                     
+        }
+    </script>    
+</html>
